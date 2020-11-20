@@ -1,6 +1,6 @@
 import boto3
 import helper
-import Data_writer
+import data_writer
 
 
 
@@ -8,8 +8,8 @@ def format_request(request):
      message = ""
      duration = ""
      if request.status.lower() == "failed" or request.status.lower() == "completed" :
-         if Data_writer.record_exists(request.job_id):
-            duration += Data_writer.get_duration_for_failed_or_completed_jobs(request.job_id,request.time)
+         if data_writer.record_exists(request.job_id):
+            duration += data_writer.get_duration_for_failed_or_completed_jobs(request.job_id,request.time)
          message += "Job ID: " + str(request.job_id)  + " with Client ID : "+str(
              request.client_id)+ " " + request.status + " at "+request.date_time + " UTC.\nDuration: " + str(duration) +
              "\nProcessing region: " + request.processing_region
