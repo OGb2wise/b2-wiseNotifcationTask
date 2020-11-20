@@ -37,7 +37,7 @@ def formatResponse(message,status):
 
 def validate_sqs_queue(event):
     if 'Records' not in event:
-        return formatResponse('The SQS message is empty',bad_request)
+        return formatResponse('The sqs message is empty',bad_request)
     for record in event['Records']:
         if not validate_key('attributes',record):
             return formatResponse('some messages missing attributes',bad_request)
@@ -104,17 +104,17 @@ def extract_value_by_key(key,event):
         except:
             return event[key.capitilize()]
     raise Exception(
-        'Attempted to extract a nonExistent key from a dictionary')
+        'Attempted to extract a nonExistent keu from a dictionary')
 
 def validate_response(event):
     if not validateResonse(event,False):
         return formatResponse("The request did not pass validation",bad_request)
-    if not validate_status(event):
+    if not validate_status(event['queryStringParameters']):
         return formatResponse("Invalid Job status",bad_request)
     return authorize(event)
 
 
-def create_request(input):
+def create_request(input,event):
     request = InputData()
     request.job_id = input['jobid']
     request.date_time = input['datetime']
@@ -123,8 +123,8 @@ def create_request(input):
     if 'message' in input.keys():
      request.message = input['message']
     request.client_id = input['clientid']
-    if is_string_valid_jason(input['body']['metadata']):
-     request.metadata = json.dumps(input['body']['metadata'])
+    if is_string_valid_jason(event['body']['metadata']):
+     request.metadata = json.dumps(event['body']['metadata'])
     request.processing_region = input['processingregion']
     return request
 

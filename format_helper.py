@@ -10,9 +10,9 @@ date_time_pattern = "^" + date_pattern + " " + time_pattern + decimal + "$"
 integer_pattern = "^\d+$"
 
 def validate_input(format_type,input):
-    if(format_type == types.Format.Date):
-        return re.match(date_time_pattern,input) != None
-    if(format_type == types.Format.Integer):
-        return re.match(integer_pattern,input) !=None
+    if(format_type.lower() == "date"):
+        return bool(re.match(date_time_pattern,input))
+    if(format_type.lower() == "integer"):
+        return bool(re.match(integer_pattern,input))
     return False
 

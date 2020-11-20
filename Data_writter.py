@@ -14,24 +14,25 @@ ErrorMessage=""
 def write_data(input):
      global ErrorMessage
      return_value = True
-     if not format_helper.validate_input(types.Format.Integer,input.job_id):
-        ErrorMessage += 'Job Id has characters that are not intergers'
-        return_value= False
-     if not format_helper.validate_input(types.Format.DateTime,input.datetime):
-         ErrorMessage += 'Date input field is not in the correct format'
-         return_value=False
+     # if not format_helper.validate_input("integer",input.job_id):
+     #     ErrorMessage += 'Job Id has characters that are not intergers'
+     #     return_value= False
+     #
+     # if not format_helper.validate_input("date",input.date_time):
+     #     ErrorMessage += 'Date input field is not in the correct format'
+     #     return_value=False
 
      if input.status.lower() == 'started':
          if not insert_staterd_job(input):
              ErrorMessage += "An error occured whileinserting record int the DynamoDb"
-             return_value = False
+             return False
      else:
          if record_exists(input.job_id):
              if update_completed_or_failed_job(input):
                 return_value = True
              else:
                  ErrorMessage += 'An error occured while trying to update an existent record on the DynamoDb'
-                 return_value = False
+                 return False
          else:
              ErrorMessage += 'An error occured while trying to update a non existent record on the DynamoDb'
      return return_value
@@ -58,9 +59,10 @@ def insert_staterd_job(input):
 
 
 def update_completed_or_failed_job(input):
-    table = client.Table(Notification_Table)
+
     try:
-        response = table.update_item(
+        response = client.update_item(
+            TableName=Notification_Table,
             Key={
                 'JobId': input,
             },
@@ -82,14 +84,13 @@ def get_duration_for_failed_or_completed_jobs(jobId,enddate):
 
 def record_exists(jobId):
     try:
-        table = client.Table(Notification_Table)
-        response = table.get_item(Key={'JobId':jobId})
+
+        response = client.get_item(TableName=Notification_Table,Key={'JobId':jobId})
     except ClientError as e:
         return False
     return True
 
 
 def get_item_by_JobId(jobId):
-    table = client.Table(Notification_Table)
-    response = table.get_item(Key={'JobId':jobId})
+    response = client.get_item(TableName=Notification_Table,Key={'JobId':jobId})
     return response
