@@ -15,7 +15,7 @@ post | /
 ### Input:
 
 Source | Field | Required | Data Type
------------- | -------------
+------------ | ------------- | ------------- | -------------
 Query Parameter | jobid | Yes | String
 Query Parameter | clientid | Yes | String
 Query Parameter | processingregion | Yes | String
