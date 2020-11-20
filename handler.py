@@ -1,7 +1,7 @@
 import json
 
 import helper
-import snp_publisher
+import sns_publisher
 import os
 
 import Data_writter
@@ -15,7 +15,7 @@ def api_notify(event, context):
     if validation['statusCode']!=200:
         return validation
     validatedrequest = helper.create_request(event)
-    sns_status = snp_publisher.publish_sns_message(SNS_ARN,validatedrequest)
+    sns_status = sns_publisher.publish_sns_message(SNS_ARN,validatedrequest)
     dynamoDbStatus = Data_writter.write_data(validatedrequest)
     return helper.boolean_based_response(sns_status, dynamoDbStatus)
 
@@ -27,6 +27,6 @@ def  sqs_notify(event,context):
          return validation
      for record in event['Records']:
          validatedrequest = helper.create_request_sqs(record['attributes'],record)
-         snp_publisher.publish_sns_message(SNS_ARN,validatedrequest)
+         sns_publisher.publish_sns_message(SNS_ARN,validatedrequest)
          Data_writter.write_data(validatedrequest)
      return helper.formatResponse('Messages sent to DynamoDb and SNS successfully',helper.ok)
