@@ -30,6 +30,9 @@ provider:
         - sqs:ReceiveMessage
       Resource:
         - {"Fn::GetAtt": [ "MyQueue", "Arn" ] }
+  apiGateway: {
+    shouldStartNameWithService: true
+  }
 
   environment:
     authorizationKey: testvalue
