@@ -29,4 +29,4 @@ def  sqs_notify(event,context):
          validatedrequest = helper.create_request_sqs(record['attributes'],record)
          sns_publisher.publish_sns_message(SNS_ARN,validatedrequest)
          Data_writter.write_data(validatedrequest)
-     return helper.formatResponse('Messages sent to DynamoDb and SNS successfully',helper.ok)
+     return helper.formatResponse('Messages sent to DynamoDB and SNS successfully',helper.ok)
