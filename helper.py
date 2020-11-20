@@ -37,7 +37,7 @@ def formatResponse(message,status):
 
 def validate_sqs_queue(event):
     if 'Records' not in event:
-        return formatResponse('The sqs message is empty',bad_request)
+        return formatResponse('The SQS message is empty',bad_request)
     for record in event['Records']:
         if not validate_key('attributes',record):
             return formatResponse('some messages missing attributes',bad_request)
@@ -97,7 +97,7 @@ def extract_value_by_key(key,event):
         except:
             return event[key.capitilize()]
     raise Exception(
-        'Attempted to extract a nonExistent keu from a dictionary')
+        'Attempted to extract a nonExistent key from a dictionary')
 
 def validate_response(event):
     if not validateResonse(event,False):
