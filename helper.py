@@ -45,14 +45,14 @@ def validate_sqs_queue(event):
             return formatResponse('some messages do not contain metadata',bad_request)
         if not validate_key_with_value('authorization',record,authKey):
             return formatResponse('authorization failed',unauthorised)
-        if not validateResonse(record['attributes'],True):
+        if not validateResponse(record['attributes'],True):
             return formatResponse('some attributes are missing',bad_request)
         if not validate_status(record['attributes']):
             return formatResponse('Invalid status Type',bad_request)
     return formatResponse('Validation passed',ok)
 
 
-def validateResonse(event,exclude_body):
+def validateResponse(event,exclude_body):
     if not exclude_body:
         return validate_key_list(['queryStringParameters','body'],event)
     else:
@@ -107,7 +107,7 @@ def extract_value_by_key(key,event):
         'Attempted to extract a nonExistent keu from a dictionary')
 
 def validate_response(event):
-    if not validateResonse(event,False):
+    if not validateResponse(event,False):
         return formatResponse("The request did not pass validation",bad_request)
     if not validate_status(event['queryStringParameters']):
         return formatResponse("Invalid Job status",bad_request)
@@ -150,7 +150,7 @@ def is_string_valid_jason(input):
     return True
 
 def validate_status(input):
-    return input['status'].lower()=="started" or input['status'].lower()=="failed" or input['status'].lower()=="completed"
+    return input['queryStringParameters']['status'].lower()=="started" or input['queryStringParameters']['status'].lower()=="failed" or input['queryStringParameters']['status'].lower()=="completed"
 
 def validate_time_format(input):
     return format_helper.is_valid_date_time(input['time'])
@@ -165,13 +165,13 @@ def validate_metadata(input):
 
 def boolean_based_response(snsStatus,dynamoDbStatus):
     if not snsStatus and not dynamoDbStatus:
-        return formatResponse("An error occured while writting data to Dymnamo Db and publishing a message to sns",
+        return formatResponse("An error occured while writing data to DymnamoDB and publishing a message to SNS",
                               internal_server_error)
     if not dynamoDbStatus:
-        return formatResponse("An error occured while writting data to Dymnamo Db ",
+        return formatResponse("An error occured while writing data to DymnamoDB ",
                                internal_server_error)
     if not snsStatus:
-        return formatResponse("An error occured while publishing a message to sns",
+        return formatResponse("An error occured while publishing a message to SNS",
                               internal_server_error)
 
     return formatResponse( "process notification generated successfully",

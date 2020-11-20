@@ -11,11 +11,10 @@ SNS_ARN = os.environ['snsarn']
 
 
 def api_notify(event, context):
-    #test deployment
     validation = helper.validate_response(event)
     if validation['statusCode']!=200:
         return validation
-    validatedrequest = helper.create_request(event['queryStringParameters'],event)
+    validatedrequest = helper.create_request(event)
     sns_status = sns_publisher.publish_sns_message(SNS_ARN,validatedrequest)
     dynamoDbStatus = Data_writter.write_data(validatedrequest)
     return helper.boolean_based_response(sns_status, dynamoDbStatus)
@@ -30,4 +29,4 @@ def  sqs_notify(event,context):
          validatedrequest = helper.create_request_sqs(record['attributes'],record)
          sns_publisher.publish_sns_message(SNS_ARN,validatedrequest)
          Data_writter.write_data(validatedrequest)
-     return helper.formatResponse('Messages sent to DynamoDb and Sns successfully',helper.ok)
+     return helper.formatResponse('Messages sent to DynamoDb and SNS successfully',helper.ok)
