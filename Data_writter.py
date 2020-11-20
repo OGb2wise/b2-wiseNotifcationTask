@@ -5,6 +5,7 @@ import boto3
 from botocore.exceptions import ClientError
 import format_helper
 import types
+from datetime import datetime
 
 client = boto3.client('dynamodb')
 Notification_Table = os.environ['Notification_Table']
@@ -44,7 +45,7 @@ def insert_staterd_job(input):
             Item={
                 'JobId': {'S': input.job_id},
                 'ClientId': {'S': input.client_id},
-                'Status': {'S': input.status},
+                'JobStatus': {'S': input.status},
                 'startime': {'S': input.date_time},
                 'endtime': {'S':""},
                 'MetaData': {'S': input.metadata},
@@ -63,15 +64,20 @@ def update_completed_or_failed_job(input):
             Key={
                 'JobId': input,
             },
-            UpdateExpression="set info.endtime=:r",
+            UpdateExpression="set info.endtime=:r, infor.JobStatus=:a",
             ExpressionAttributeValues={
-                ':r': input.date_time
+                ':r': input.date_time,
+                ':a': input.status
             },
             ReturnValues="UPDATED_NEW"
         )
     except Exception as ex:
         return False
     return True
+
+def get_duration_for_failed_or_completed_jobs(jobId,enddate):
+     response = get_item_by_JobId(jobId)
+     return datetime.strptime(enddate,'%Y-%m-%d %H:%M:%S.%f') - datetime.strptime(response['Item']['startime'],'%Y-%m-%d %H:%M:%S.%f')
 
 
 def record_exists(jobId):
@@ -81,3 +87,9 @@ def record_exists(jobId):
     except ClientError as e:
         return False
     return True
+
+
+def get_item_by_JobId(jobId):
+    table = client.Table(Notification_Table)
+    response = table.get_item(Key={'JobId':jobId})
+    return response
