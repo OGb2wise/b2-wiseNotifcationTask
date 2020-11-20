@@ -1,4 +1,3 @@
-
 import helper
 import os
 import boto3
@@ -24,17 +23,17 @@ def write_data(input):
 
      if input.status.lower() == 'started':
          if not insert_staterd_job(input):
-             ErrorMessage += "An error occured whileinserting record int the DynamoDB"
+             ErrorMessage += "An error occured whileinserting record int the DynamoDb"
              return False
      else:
          if record_exists(input.job_id):
              if update_completed_or_failed_job(input):
                 return_value = True
              else:
-                 ErrorMessage += 'An error occured while trying to update an existent record on the DynamoDB'
+                 ErrorMessage += 'An error occured while trying to update an existent record on the DynamoDb'
                  return False
          else:
-             ErrorMessage += 'An error occured while trying to update a non existent record on the DynamoDB'
+             ErrorMessage += 'An error occured while trying to update a non existent record on the DynamoDb'
      return return_value
 
 
@@ -53,7 +52,7 @@ def insert_staterd_job(input):
             }
         )
     except  Exception as x:
-         ErrorMessage +='An error occured while attempting to insert the beginning of a job into DynamoDB'
+         ErrorMessage +='An error occure while attempting to insert the beginning of a job into the Dynamo Db'
          return False
     return True
 
@@ -64,12 +63,12 @@ def update_completed_or_failed_job(input):
         response = client.update_item(
             TableName=Notification_Table,
             Key={
-                'JobId': input,
+                'JobId': {'S': input.job_id},
             },
-            UpdateExpression="set info.endtime=:r, infor.JobStatus=:a",
+            UpdateExpression="SET endtime=:r, JobStatus=:a",
             ExpressionAttributeValues={
-                ':r': input.date_time,
-                ':a': input.status
+                ':r': {'S': input.date_time},
+                ':a': {'S': input.status}
             },
             ReturnValues="UPDATED_NEW"
         )
@@ -79,18 +78,18 @@ def update_completed_or_failed_job(input):
 
 def get_duration_for_failed_or_completed_jobs(jobId,enddate):
      response = get_item_by_JobId(jobId)
-     return datetime.strptime(enddate,'%Y-%m-%d %H:%M:%S.%f') - datetime.strptime(response['Item']['startime'],'%Y-%m-%d %H:%M:%S.%f')
+     return datetime.strptime(enddate,'%Y-%m-%d %H:%M:%S.%f') - datetime.strptime(response['Item']['startime']['S'],'%Y-%m-%d %H:%M:%S.%f')
 
 
 def record_exists(jobId):
     try:
 
-        response = client.get_item(TableName=Notification_Table,Key={'JobId':jobId})
+        response = client.get_item(TableName=Notification_Table,Key={'JobId': {'S': jobId}})
     except ClientError as e:
         return False
     return True
 
 
 def get_item_by_JobId(jobId):
-    response = client.get_item(TableName=Notification_Table,Key={'JobId':jobId})
+    response = client.get_item(TableName=Notification_Table,Key={'JobId': {'S': jobId}})
     return response
