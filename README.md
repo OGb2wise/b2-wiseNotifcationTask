@@ -4,7 +4,7 @@ An Event Monitoring Notification Service that receives input from an Amazon SQS 
 
 
 ## Architecture:
-!(https://github.com/OGb2wise/b2-wiseNotifcationTask/blob/main/notification_service_architecture.png?raw=true)
+![alt text](https://github.com/OGb2wise/b2-wiseNotifcationTask/blob/main/notification_service_architecture.png?raw=true)
 
 ## Endpoints:
 
