@@ -1,0 +1,17 @@
+import re
+import types
+
+
+date_pattern = '(1|2)([0-9]{3})(-|/)([0-9]|1[0-2])(-|/)([0-9]|1[0-2]|[1-2][0-9]|3[0-1])'
+time_pattern = '([0-9]|1[0-9]|2[0-4]):([0-9]|[1-5][0-9]):([0-9]|[1-5][0-9])'
+date_time_pattern = "^" + date_pattern + " " + time_pattern + "$"
+decimal = '\.\d+'
+integer_pattern = "^\d+$"
+
+def validate_input(format_type,input):
+    if(format_type == types.Format.Date):
+        return re.match(date_time_pattern,input) != None
+    if(format_type == types.Format.Integer):
+        return re.match(integer_pattern,input) !=None
+    return False
+
