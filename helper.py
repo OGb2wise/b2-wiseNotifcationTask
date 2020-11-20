@@ -18,7 +18,7 @@ class InputData:
         self.processing_region=""
         self.message=""
         self.status=""
-        self.time= ""
+        self.date_time= ""
         self.metadata=""
 
 
@@ -54,9 +54,16 @@ def validate_sqs_queue(event):
 
 def validateResonse(event,exclude_body):
     if not exclude_body:
-        return validate_key_list(['jobid','clientid','status','body','datetime','processingregion'],event)
+        return validate_key_list(['queryStringParameters','body'],event)
     else:
-        return validate_key_list(['jobid','clientid','status','time','processingregion'],event)
+        return validate_key_list(['queryStringParameters'],event)
+
+def checkQueryString(event):
+    return 'queryStringParameters' in event.keys()
+
+
+def validate_parameters(event):
+   return validate_key_list(['jobid','clientid','status','datetime','processingregion'],event)
 
 
 def validate_key_list(keylist,event):
@@ -108,9 +115,9 @@ def validate_response(event):
 
 
 def create_request(input):
-    request = types.InputData()
+    request = InputData()
     request.job_id = input['jobid']
-    request.start_time = input['startime']
+    request.date_time = input['datetime']
 
     request.status = input['status']
     if 'message' in input.keys():
@@ -122,7 +129,7 @@ def create_request(input):
     return request
 
 def create_request_sqs(input,event):
-    request = types.InputData()
+    request = InputData()
     request.job_id = input['jobid']
     request.date_time = input['datetime']
     request.status = input['status']
