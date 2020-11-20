@@ -174,5 +174,5 @@ def boolean_based_response(snsStatus,dynamoDbStatus):
         return formatResponse("An error occured while publishing a message to SNS",
                               internal_server_error)
 
-    return formatResponse( "process notification generated successfully",
+    return formatResponse("process notification generated successfully",
                            internal_server_error)

@@ -1,6 +1,6 @@
 import boto3
 import helper
-import Data_writter
+import Data_writer
 
 
 
@@ -8,14 +8,16 @@ def format_request(request):
      message = ""
      duration = ""
      if request.status.lower() == "failed" or request.status.lower() == "completed" :
-         if Data_writter.record_exists(request.job_id):
-            duration += Data_writter.get_duration_for_failed_or_completed_jobs(request.job_id,request.time)
-         message += "Job Id:\t" + str(request.job_id)  + "\twith Client ID :\t"+str(
-             request.client_id)+ "\t" + request.status + "\tat\t"+request.date_time + "\t Duration was: \t" + str(duration)
+         if Data_writer.record_exists(request.job_id):
+            duration += Data_writer.get_duration_for_failed_or_completed_jobs(request.job_id,request.time)
+         message += "Job ID: " + str(request.job_id)  + " with Client ID : "+str(
+             request.client_id)+ " " + request.status + " at "+request.date_time + " UTC.\nDuration: " + str(duration) +
+             "\nProcessing region: " + request.processing_region
 
      else:
-         message += "Job Id:\t" + str(request.job_id) + "\twith Client ID :\t" + str(
-             request.client_id) + "\t" + request.status + "\tat\t" + request.date_time
+         message += "Job ID: " + str(request.job_id) + " with Client ID : " + str(
+             request.client_id) + " " + request.status + " at " + request.date_time + " UCT." +
+             "\nProcessing region: " + request.processing_region
      return message
 
 
