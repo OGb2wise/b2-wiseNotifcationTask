@@ -21,6 +21,6 @@ Query Parameter | clientid | Yes | String
 Query Parameter | processingregion | Yes | String
 Query Parameter | status | Yes | "started", "completed", "failed"
 Query Parameter | environment | Yes | String
-Query Parameter | time | Yes | String representation of a datetime object.\Either:<br>year-month-day hour:minute:second.microsecond<br>'%Y-%m-%d %H:%M:%S.%f'<br><br>year/month/day hour:minute:second.microsecond<br>'%Y/%m/%d %H:%M:%S.%f'
+Query Parameter | time | Yes | String representation of a datetime object.<br>Either:<br>year-month-day hour:minute:second.microsecond<br>'%Y-%m-%d %H:%M:%S.%f'<br>OR<br>year/month/day hour:minute:second.microsecond<br>'%Y/%m/%d %H:%M:%S.%f'
 Query Parameter | errors | No | String
 Body | metadata | Yes | JSON
